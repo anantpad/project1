@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  </head>
+  <body class="container">
+
+      <nav class="navbar navbar-expand navbar-light bg-light">
+          <a class="navbar-brand" href="">Good Books</a>
+          <ul class="navbar-nav">
+            <li class="nav-item"><a class="btn btn-outline-primary" href="/home/{{ username }}">Search again!</a></li>
+            <li class="nav-item"><a class="btn btn-outline-primary ml-3" href="{{ url_for('logout') }}">Logout</a></li>
+          </ul>
+      </nav>
+      <h1>Search Results:</h1>
+      <div class="pt-4">
+        <a role="button" class="btn btn-outline-success btn-lg" href="/book/{{ isbn }}">
+        <h5 name="title" id="title">ISBN: {{ isbn }}</h5>
+        <h5 name="title" id="title">Title: {{ title }}</h5>
+        <h5 name="author" id="author">Author: {{ author }}</h5>
+        <h5 name="year" id="year">Year of publication: {{ year }}</h5>
+        </a>
+      </div>
+
+  </body>
+</html>

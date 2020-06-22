@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Book Reviews</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  </head>
+  <body class="container">
+    <h1>Book Reviews</h1>
+    <nav class="navbar navbar-expand navbar-light bg-light">
+      <a class="navbar-brand" href="">Good Books</a>
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="btn btn-outline-primary ml-3" href="{{ url_for('logout') }}">Logout</a></li>
+          <li class="nav-item"><a class="btn btn-outline-primary ml-3">You are logged on as: <strong>{{ username }}</strong></a></li>
+        </ul>
+    </nav>
+    <form class="" action="" method="post">
+      <div class="d-flex justify-content-center pt-2">
+        <input type="text" name="search" placeholder="Search.." value="">
+        <input role="button" class="btn btn-outline-sucess" type="submit" name="" value="Search">
+      </div>
+      <div class="d-flex justify-content-center pt-2">
+        <p>Example Search: <strong> The Afghan </strong> or <strong> 0399153942 </strong> or <strong> Frederick Forsyth </strong></p>
+      </div>
+    </form>
+
+  </body>
+</html>

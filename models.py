@@ -18,4 +18,3 @@ class books(db.Model):
     author = db.Column(db.String, nullable = False)
     year = db.Column(db.String, nullable = False)
 
-hjahjkasjaskdhfkj

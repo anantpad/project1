@@ -13,7 +13,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Set up database
-engine = create_engine("postgres://nzcyryjmdzcgpe:3d72cb38f88503ad143713a9a6b040e5b3f8fba69b1d4b944983c3a55956f348@ec2-54-236-169-55.compute-1.amazonaws.com:5432/d82d3c2l0picn7")
+engine = create_engine("DATABASE_URL")
 db = scoped_session(sessionmaker(bind=engine))
 
 @app.route("/index")
@@ -90,7 +90,7 @@ def search(search):
 @app.route("/book/<isbn>", methods=['GET', 'POST'])
 def book(isbn):
     if request.method == 'GET':
-        res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "YyLgmPuVjytu4377OeIjLg", "isbns": isbn})
+        res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "KEY", "isbns": isbn})
         response = res.json()
         bookInfo = db.execute("SELECT isbn, title, author, year FROM booksList WHERE isbn = :isbn", {"isbn": isbn}).fetchall()
         username = session['user']
@@ -106,7 +106,7 @@ def book(isbn):
 
 @app.route("/api/<isbn>")
 def api(isbn):
-    res = requests.get("https://www.goodreads.com/book/review_counts.json",params={"key": "YyLgmPuVjytu4377OeIjLg", "isbns": isbn})
+    res = requests.get("https://www.goodreads.com/book/review_counts.json",params={"key": "KEY", "isbns": isbn})
     bookInfo = db.execute("SELECT isbn, title, author, year FROM booksList WHERE isbn = :isbn",
                           {"isbn": isbn}).fetchall()
     if bookInfo:

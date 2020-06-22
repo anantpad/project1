@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 # Set up database
-engine = create_engine("postgres://nzcyryjmdzcgpe:3d72cb38f88503ad143713a9a6b040e5b3f8fba69b1d4b944983c3a55956f348@ec2-54-236-169-55.compute-1.amazonaws.com:5432/d82d3c2l0picn7")
+engine = create_engine("DATABASE_URL")
 db = scoped_session(sessionmaker(bind=engine))
 
 # Creating a table called booksList, with columns: ISBN, title, author, and year

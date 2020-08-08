@@ -1,24 +1,18 @@
 import csv
-from flask import Flask, session
-from flask_session import Session
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+from pymongo import MongoClient
 
-# Set up database
-engine = create_engine("DATABASE_URL")
-db = scoped_session(sessionmaker(bind=engine))
+client = MongoClient("mongodb://sridhar:asdf@cluster0-shard-00-00-aou9c.mongodb.net:27017,cluster0-shard-00-01-aou9c.mongodb.net:27017,cluster0-shard-00-02-aou9c.mongodb.net:27017/goodreads?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority")
+db = client.goodreads
+coll = db.bookLists
 
-# Creating a table called booksList, with columns: ISBN, title, author, and year
-def main():
-    db.execute("CREATE TABLE booksList (id SERIAL, isbn VARCHAR NOT NULL, title VARCHAR NOT NULL, author VARCHAR NOT NULL, year VARCHAR NOT NULL)")
-    print("Table booksList created successfully")
-    f = open("books.csv")
-    reader = csv.reader(f)
-    for isbn, title, author, year in reader:
-        db.execute("INSERT INTO booksList (isbn, title, author, year) VALUES (:isbn, :title, :author, :year)", {"isbn":isbn, "title":title, "author":author, "year":year})
-        print(f"Added {title} by {author}, published in {year} and has ISBN value of {isbn}")
-    db.commit()
+reader = csv.DictReader(open("C:/Users/srramachandran/OneDrive/PythonProjects/goodReads/books.csv"))
+result = {}
+ordered_dict_from_Csv = []
+for row in reader:
+    coll.insert_one(dict(row.items()))
+    print(dict(row.items()))
 
-#run
-if __name__ == "__main__":
-    main()
+    # ordered_dict_from_Csv.append(list(reader))
+    # print(ordered_dict_from_Csv)
+# dict_from_Csv = dict(ordered_dict_from_Csv)
+# print(dict_from_Csv)

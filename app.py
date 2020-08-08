@@ -12,6 +12,9 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Set up database
+# client = pymongo.MongoClient("mongodb://sridhar:asdf@cluster0-shard-00-00-aou9c.mongodb.net:27017,cluster0-shard-00-01-aou9c.mongodb.net:27017,cluster0-shard-00-02-aou9c.mongodb.net:27017/goodreads?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority")
+# db = client["database"]
+
 app.config["MONGO_URI"] = "mongodb://sridhar:asdf@cluster0-shard-00-00-aou9c.mongodb.net:27017,cluster0-shard-00-01-aou9c.mongodb.net:27017,cluster0-shard-00-02-aou9c.mongodb.net:27017/goodreads?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority"
 # app.config["MONGO_URI"] = "mongodb://sridhar:asdf@cluster0-aou9c.mongodb.net/test?retryWrites=true&w=majority"
 mongo = PyMongo(app)
@@ -52,8 +55,9 @@ def loginUser():
         username = request.form.get('username')
         password = request.form.get('password')
         checkUsername = mongo.db.registrations.find_one({"username": username, "password":password})
+        print(checkUsername)
         if checkUsername:
-            session["user"] = checkUsername[0]
+            session["user"] = checkUsername["username"]
             # return redirect("/search")
             return redirect(url_for('home', username=username))
         else:
@@ -70,12 +74,18 @@ def home(username):
 @app.route('/search/<search>', methods=['GET', 'POST'])
 def search(search):
     if request.method == 'GET':
-        isbn = mongo.db.bookList.find_one({"search": search})
-        title = mongo.db.bookList.find_one({"search": search})
-        author = mongo.db.bookList.find_one({"search": search})
-        year = mongo.db.bookList.find_one({"search": search})
+        found_result = list(mongo.db.bookLists.find({
+            "$or":
+                [
+                    {"isbn": search},
+                    {"title": search},
+                    {"author": search},
+                    {"year": search}
+                ]
+        }))
+        print((found_result)[0]["isbn"])
         username = session['user']
-        return render_template('results.html', isbn=isbn[0], title=title[0], author=author[0], year=year[0], username=username)
+        return render_template('results.html', isbn=list(found_result)[0]["isbn"], title=list(found_result)[0]["title"], author=list(found_result)[0]["author"], year=list(found_result)[0]["year"], username=username)
     else:
         isbn = request.header('isbn')
         print(isbn)
@@ -84,24 +94,26 @@ def search(search):
 @app.route("/book/<isbn>", methods=['GET', 'POST'])
 def book(isbn):
     if request.method == 'GET':
-        res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "KEY", "isbns": isbn})
+        res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "2WrxKhTnvXldLeXUfDEA", "isbns": isbn})
         response = res.json()
-        bookInfo = mongo.db.bookList.find({"isbn": isbn})
+        bookInfo = mongo.db.bookLists.find({"isbn": isbn})
         username = session['user']
-        reviews = mongo.db.bookList.find({"isbn": isbn})
-        return render_template('reviews.html', response=response, bookInfo=bookInfo, username=username, reviews=reviews)
+        reviews = list(mongo.db.bookReview.find({"bookId": isbn}))
+        for i in reviews:
+            print(i)
+        return render_template('reviews.html', response=response, bookInfo=bookInfo, reviews=reviews, username=username)
     else:
         review = request.form.get('review')
         rating = request.form.get('rating')
         user = session['user']
-        mongo.db.insert_one(
+        mongo.db.bookReview.insert_one(
             {"bookId":isbn, "user":user, "rating":rating, "review":review})
         return redirect(url_for('book', isbn=isbn))
 
 @app.route("/api/<isbn>")
 def api(isbn):
-    res = requests.get("https://www.goodreads.com/book/review_counts.json",params={"key": "KEY", "isbns": isbn})
-    bookInfo = mongo.db.bookList.find({"isbn": isbn})
+    res = requests.get("https://www.goodreads.com/book/review_counts.json",params={"key": "2WrxKhTnvXldLeXUfDEA", "isbns": isbn})
+    bookInfo = mongo.db.bookLists.find({"isbn": isbn})
     if bookInfo:
         response = res.json()
         return response

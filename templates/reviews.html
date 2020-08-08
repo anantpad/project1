@@ -52,10 +52,10 @@
         </div>
       </form>
     </div>
-    {% for user in reviews %}
+    {% for review in reviews %}
     <div class="col-6 card bg-secondary text-white pt-3 mt-3">
-      <p>Username: <strong>{{ user[0] }}</strong> | Rating: <strong>{{ user[1] }}</strong></p>
-      <p>Review: <strong>{{ user[2] }}</strong></p>
+      <p>Username: <strong>{{ review['user'] }}</strong> | Rating: <strong>{{ review['rating'] }}</strong></p>
+      <p>Review: <strong>{{ review['review'] }}</strong></p>
     </div>
     {% endfor %}
   </body>

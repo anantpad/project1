@@ -2,6 +2,8 @@ import requests
 from flask import Flask, session, request, render_template, redirect, url_for
 from flask_session import Session
 from flask_pymongo import PyMongo
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
 app.debug = True
@@ -15,7 +17,9 @@ Session(app)
 # client = pymongo.MongoClient("mongodb://sridhar:asdf@cluster0-shard-00-00-aou9c.mongodb.net:27017,cluster0-shard-00-01-aou9c.mongodb.net:27017,cluster0-shard-00-02-aou9c.mongodb.net:27017/goodreads?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority")
 # db = client["database"]
 
-app.config["MONGO_URI"] = "mongodb://sridhar:asdf@cluster0-shard-00-00-aou9c.mongodb.net:27017,cluster0-shard-00-01-aou9c.mongodb.net:27017,cluster0-shard-00-02-aou9c.mongodb.net:27017/goodreads?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority"
+login = os.getenv("LOGIN")
+password = os.getenv("PASSWORD")
+app.config["MONGO_URI"] = "mongodb://login:password@cluster0-shard-00-00-aou9c.mongodb.net:27017,cluster0-shard-00-01-aou9c.mongodb.net:27017,cluster0-shard-00-02-aou9c.mongodb.net:27017/goodreads?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority"
 # app.config["MONGO_URI"] = "mongodb://sridhar:asdf@cluster0-aou9c.mongodb.net/test?retryWrites=true&w=majority"
 mongo = PyMongo(app)
 

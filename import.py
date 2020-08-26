@@ -9,8 +9,13 @@ reader = csv.DictReader(open("C:/Users/srramachandran/OneDrive/PythonProjects/go
 result = {}
 ordered_dict_from_Csv = []
 for row in reader:
-    coll.insert_one(dict(row.items()))
     print(dict(row.items()))
+    coll.update_one(
+        {"isbn":dict(row.items())["isbn"]},{"$set":{
+            "isbn":dict(row.items())["isbn"], "title":dict(row.items())["title"], "author":dict(row.items())["author"], "year":dict(row.items())["year"]
+        }
+        }, upsert = True)
+    # coll.insert_one(dict(row.items()))
 
     # ordered_dict_from_Csv.append(list(reader))
     # print(ordered_dict_from_Csv)
